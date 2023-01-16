@@ -12,6 +12,8 @@ namespace ProfilerHelper
     {
         static void Main(string[] args)
         {
+            if (args.Length != 2)
+                throw new ArgumentException("Not Enough Arguments");
             List<instantce> instantceList = new List<instantce>();
             Regex regex = new Regex("([^ ]+) *([^ ]+) *([^ ]+) *([^ ]+) *([^ ]+) *([^ ]+) *([^ ]+)");
             string[] file = File.ReadAllLines(args[0]);
@@ -40,10 +42,7 @@ namespace ProfilerHelper
                     ));
             }
 
-            IEnumerable<instantce> sortedList =
-                from instantce in instantceList
-                orderby instantce.total_time descending
-                select instantce;
+            IEnumerable<instantce> sortedList = sort(args, instantceList);
 
             Console.WriteLine(
                 "line".PadRight(5) + "|" + "name".PadRight(105) + "root%" + "parent%".PadLeft(10) + "other%".PadLeft(10) + "total_time".PadLeft(16) + "single_time".PadLeft(16) + "hits".PadLeft(20)
@@ -55,6 +54,29 @@ namespace ProfilerHelper
 
             Console.WriteLine("Press any to exit");
             Console.ReadKey();
+        }
+        static IEnumerable<instantce> sort(string[] args, List<instantce> instantceList)
+        {
+            switch (args[2].ToUpper())
+            {
+                case "LINE":
+                    return from instantce in instantceList orderby instantce.line descending select instantce;
+                case "NAME":
+                    return from instantce in instantceList orderby instantce.name descending select instantce;
+                case "ROOT":
+                    return from instantce in instantceList orderby instantce.root descending select instantce;
+                case "PARENT":
+                    return from instantce in instantceList orderby instantce.parent descending select instantce;
+                case "OTHER":
+                    return from instantce in instantceList orderby instantce.other descending select instantce;
+                case "SINGLE_TIME":
+                    return from instantce in instantceList orderby instantce.single_time descending select instantce;
+                case "HITS":
+                    return from instantce in instantceList orderby instantce.hits descending select instantce;
+                case "TOTAL_TIME":
+                default:
+                    return from instantce in instantceList orderby instantce.total_time descending select instantce;
+            }
         }
     }
     class instantce
