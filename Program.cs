@@ -57,7 +57,7 @@ namespace ProfilerHelper
         }
         static IEnumerable<instantce> sort(string[] args, List<instantce> instantceList)
         {
-            switch (args[2].ToUpper())
+            switch (args[1].ToUpper())
             {
                 case "LINE":
                     return from instantce in instantceList orderby instantce.line descending select instantce;
